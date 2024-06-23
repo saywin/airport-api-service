@@ -57,12 +57,12 @@ class Route(models.Model):
     source = models.ForeignKey(
         "Airport",
         on_delete=models.CASCADE,
-        related_name="source-routes"
+        related_name="source_routes"
     )
     destination = models.ForeignKey(
         "Airport",
         on_delete=models.CASCADE,
-        related_name="destination-routes"
+        related_name="destination_routes"
     )
 
     class Meta:
