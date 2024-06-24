@@ -75,7 +75,14 @@ class FlightListSerializer(FlightSerializer):
         slug_field="full_name",
         many=True,
     )
-    route = RouteSerializer()
+    route = RouteListSerializer()
+
+
+class AirplaneListSerializer(AirplaneSerializer):
+    airplane_type = serializers.CharField(
+        source="airplane_type.name",
+        read_only=True
+    )
 
 
 class TicketSerializer(serializers.ModelSerializer):
