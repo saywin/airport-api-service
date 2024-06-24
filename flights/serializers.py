@@ -78,6 +78,12 @@ class FlightListSerializer(FlightSerializer):
     route = RouteListSerializer()
 
 
+class FlightRetrieveSerializer(FlightSerializer):
+    route = RouteListSerializer()
+    airplane = AirplaneSerializer()
+    crew = CrewSerializer(many=True)
+
+
 class AirplaneListSerializer(AirplaneSerializer):
     airplane_type = serializers.CharField(
         source="airplane_type.name",
