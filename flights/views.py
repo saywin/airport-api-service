@@ -1,13 +1,23 @@
 from rest_framework import viewsets
 
-from flights.models import Airport, Flight, AirplaneType, Route, Crew, Airplane, Order
+from flights.models import (
+    Airport,
+    Flight,
+    AirplaneType,
+    Route,
+    Crew,
+    Airplane,
+    Order
+)
 from flights.serializers import (
     AirportSerializer,
     FlightSerializer,
     AirplaneTypeSerializer,
     RouteSerializer,
     CrewSerializer,
-    AirplaneSerializer, OrderSerializer, FlightListSerializer
+    AirplaneSerializer,
+    OrderSerializer,
+    FlightListSerializer, CrewListSerializer
 )
 
 
@@ -43,6 +53,11 @@ class RouteViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CrewListSerializer
+        return CrewSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
