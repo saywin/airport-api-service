@@ -7,13 +7,17 @@ from flights.serializers import (
     AirplaneTypeSerializer,
     RouteSerializer,
     CrewSerializer,
-    AirplaneSerializer, OrderSerializer
+    AirplaneSerializer, OrderSerializer, FlightListSerializer
 )
 
 
 class FlightViewSet(viewsets.ModelViewSet):
     queryset = Flight.objects.all()
-    serializer_class = FlightSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FlightListSerializer
+        return FlightSerializer
 
 
 class AirplaneViewSet(viewsets.ModelViewSet):
