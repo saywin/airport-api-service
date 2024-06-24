@@ -21,4 +21,6 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/airport/", include("flights.urls", namespace="airport")),
+
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
