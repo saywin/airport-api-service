@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 
 class Airplane(models.Model):
@@ -31,6 +32,31 @@ class Ticket(models.Model):
     seat = models.IntegerField()
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
     order = models.ForeignKey("Order", on_delete=models.CASCADE)
+
+    @staticmethod
+    def validate_ticket(row, seat, airplane, error_to_raise):
+        for ticket_attr_value, ticket_attr_name, airplane_attr_name in [
+            (row, "row", "rows"),
+            (seat, "seat", "seats_in_row"),
+        ]:
+            count_attrs = getattr(airplane, airplane_attr_name)
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise error_to_raise(
+                    {
+                        ticket_attr_name: f"{ticket_attr_name} "
+                        f"number must be in available range: "
+                        f"(1, {airplane_attr_name}): "
+                        f"(1, {count_attrs})"
+                    }
+                )
+
+    def clean(self):
+        return self.validate_ticket(
+            row=self.row,
+            seat=self.seat,
+            airplane=self.flight.airplane,
+            error_to_raise=ValidationError
+        )
 
     class Meta:
         ordering = ["flight", "row", "seat"]
@@ -100,7 +126,6 @@ class Flight(models.Model):
 
     def __str__(self):
         return (
-            f"{self.route.name} "
             f"{self.airplane.name} "
             f"{self.departure_time} "
             f"{self.arrival_time}"

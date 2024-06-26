@@ -97,12 +97,14 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("id", "row", "seat", "flight", "order")
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Ticket.objects.all(),
-                fields=["seat", "flight"]
-            )
-        ]
+
+    def validate(self, attrs):
+        Ticket.validate_ticket(
+            row=attrs["row"],
+            seat=attrs["seat"],
+            airplane=attrs["flight"],
+            error_to_raise=serializers.ValidationError
+        )
 
 
 class OrderSerializer(serializers.ModelSerializer):

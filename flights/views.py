@@ -37,6 +37,7 @@ class FlightViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+
         if self.action in ("list", "retrieve"):
             queryset = Flight.objects.select_related().prefetch_related("crew")
         return queryset
