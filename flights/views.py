@@ -1,7 +1,10 @@
 from django.db.models import Count, F
-from rest_framework import viewsets
+from django.http import HttpRequest
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from flights.models import (
     Airport,
@@ -26,7 +29,7 @@ from flights.serializers import (
     AirplaneListSerializer,
     FlightRetrieveSerializer,
     AirplaneRetrieveSerializer,
-    OrderRetrieveSerializer
+    OrderRetrieveSerializer, AirplaneImageSerializer
 )
 from user.permissions import IsAdminAllOrIsAuthenticatedReadOnly
 
@@ -67,6 +70,8 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             return AirplaneListSerializer
         if self.action == "retrieve":
             return AirplaneRetrieveSerializer
+        if self.action == "upload_image":
+            return AirplaneImageSerializer
         return AirplaneSerializer
 
     @staticmethod
@@ -82,6 +87,19 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             airplane_type = self._params_to_ints(airplane_type)
             queryset = queryset.filter(airplane_type__id__in=airplane_type)
         return queryset.distinct()
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+    )
+    def upload_image(self, request, pk=None) -> Response:
+        airplane = self.get_object()
+        serializer = self.get_serializer(airplane, data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AirportViewSet(viewsets.ModelViewSet):
