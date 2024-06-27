@@ -26,7 +26,7 @@ from flights.serializers import (
     AirplaneListSerializer,
     FlightRetrieveSerializer,
     AirplaneRetrieveSerializer,
-    OrderListSerializer
+    OrderRetrieveSerializer
 )
 from user.permissions import IsAdminAllOrIsAuthenticatedReadOnly
 
@@ -160,8 +160,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         return queryset.distinct()
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return OrderListSerializer
+        if self.action == "retrieve":
+            return OrderRetrieveSerializer
         return OrderSerializer
 
     def perform_create(self, serializer):

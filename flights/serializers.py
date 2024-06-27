@@ -1,6 +1,5 @@
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from flights.models import (
     Airport,
@@ -161,5 +160,5 @@ class OrderSerializer(serializers.ModelSerializer):
             return order
 
 
-class OrderListSerializer(OrderSerializer):
+class OrderRetrieveSerializer(OrderSerializer):
     tickets = TicketListSerializer(many=True, read_only=False, allow_empty=False)
