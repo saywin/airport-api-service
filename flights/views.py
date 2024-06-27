@@ -22,7 +22,7 @@ from flights.serializers import (
     CrewListSerializer,
     RouteListSerializer,
     AirplaneListSerializer,
-    FlightRetrieveSerializer, AirplaneRetrieveSerializer
+    FlightRetrieveSerializer, AirplaneRetrieveSerializer, OrderListSerializer
 )
 
 
@@ -128,10 +128,18 @@ class CrewViewSet(viewsets.ModelViewSet):
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        queryset = self.queryset.filter(user=self.request.user)
+        if self.action == "list":
+            queryset = Order.objects.prefetch_related(
+                "tickets__flight__airplane", "tickets__flight__crew", "tickets__flight__route")
+        return queryset.distinct()
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+        return OrderSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
