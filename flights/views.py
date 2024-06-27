@@ -1,5 +1,6 @@
 from django.db.models import Count, F
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 
 from flights.models import (
     Airport,
@@ -22,7 +23,9 @@ from flights.serializers import (
     CrewListSerializer,
     RouteListSerializer,
     AirplaneListSerializer,
-    FlightRetrieveSerializer, AirplaneRetrieveSerializer, OrderListSerializer
+    FlightRetrieveSerializer,
+    AirplaneRetrieveSerializer,
+    OrderListSerializer
 )
 
 
@@ -126,14 +129,25 @@ class CrewViewSet(viewsets.ModelViewSet):
         return CrewSerializer
 
 
+class OrderSetPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = "page_size"
+    max_page_size = 20
+
+
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
+    pagination_class = OrderSetPagination
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
+
         if self.action == "list":
             queryset = Order.objects.prefetch_related(
-                "tickets__flight__airplane", "tickets__flight__crew", "tickets__flight__route")
+                "tickets__flight__airplane",
+                "tickets__flight__crew",
+                "tickets__flight__route",
+            )
         return queryset.distinct()
 
     def get_serializer_class(self):
