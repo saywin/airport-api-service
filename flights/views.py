@@ -51,11 +51,19 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             return AirplaneListSerializer
         return AirplaneSerializer
 
+    @staticmethod
+    def _params_to_ints(query_string: int) -> list[int]:
+        return [int(str_id) for str_id in query_string.split(",")]
+
     def get_queryset(self):
         queryset = self.queryset
+        airplane_type = self.request.query_params.get("airplane_type")
         if self.action == "list":
             queryset = Airplane.objects.select_related()
-        return queryset
+        if airplane_type:
+            airplane_type = self._params_to_ints(airplane_type)
+            queryset = queryset.filter(airplane_type__id__in=airplane_type)
+        return queryset.distinct()
 
 
 class AirportViewSet(viewsets.ModelViewSet):
@@ -76,10 +84,25 @@ class RouteViewSet(viewsets.ModelViewSet):
             return RouteListSerializer
         return RouteSerializer
 
+    @staticmethod
+    def _params_to_ints(query_string: int) -> list[int]:
+        return [int(str_id) for str_id in query_string.split(",")]
+
     def get_queryset(self):
         queryset = self.queryset
+        source = self.request.query_params.get("source")
+        destination = self.request.query_params.get("destination")
+
         if self.action == "list":
             queryset = Route.objects.select_related()
+
+        if source:
+            source = self._params_to_ints(source)
+            queryset = queryset.filter(source__id__in=source)
+        if destination:
+            destination = self._params_to_ints(destination)
+            queryset = queryset.filter(destination__id__in=destination)
+
         return queryset
 
 
