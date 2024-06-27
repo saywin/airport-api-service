@@ -151,12 +151,14 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
 
-        if self.action == "list":
+        if self.action == "retrieve":
             queryset = Order.objects.prefetch_related(
                 "tickets__flight__airplane",
                 "tickets__flight__crew",
                 "tickets__flight__route",
             )
+        if self.action == "list":
+            queryset = Order.objects.prefetch_related("tickets")
         return queryset.distinct()
 
     def get_serializer_class(self):
