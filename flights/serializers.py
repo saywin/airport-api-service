@@ -92,6 +92,9 @@ class AirplaneListSerializer(AirplaneSerializer):
         read_only=True
     )
 
+class AirplaneRetrieveSerializer(AirplaneSerializer):
+    airplane_type = AirplaneTypeSerializer()
+
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:

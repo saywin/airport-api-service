@@ -21,7 +21,7 @@ from flights.serializers import (
     CrewListSerializer,
     RouteListSerializer,
     AirplaneListSerializer,
-    FlightRetrieveSerializer
+    FlightRetrieveSerializer, AirplaneRetrieveSerializer
 )
 
 
@@ -49,6 +49,8 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return AirplaneListSerializer
+        if self.action == "retrieve":
+            return AirplaneRetrieveSerializer
         return AirplaneSerializer
 
     @staticmethod
@@ -103,7 +105,7 @@ class RouteViewSet(viewsets.ModelViewSet):
             destination = self._params_to_ints(destination)
             queryset = queryset.filter(destination__id__in=destination)
 
-        return queryset.dictinct()
+        return queryset.distinct()
 
 
 class CrewViewSet(viewsets.ModelViewSet):
