@@ -103,7 +103,7 @@ class RouteViewSet(viewsets.ModelViewSet):
             destination = self._params_to_ints(destination)
             queryset = queryset.filter(destination__id__in=destination)
 
-        return queryset
+        return queryset.dictinct()
 
 
 class CrewViewSet(viewsets.ModelViewSet):
