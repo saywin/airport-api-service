@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "flights",
     "user",
     "rest_framework.authtoken",
-    "drf_spectacular"
+    "drf_spectacular",
     "debug_toolbar",
 ]
 

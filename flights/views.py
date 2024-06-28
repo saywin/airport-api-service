@@ -1,5 +1,6 @@
 from django.db.models import Count, F
 from django.http import HttpRequest
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -29,7 +30,8 @@ from flights.serializers import (
     AirplaneListSerializer,
     FlightRetrieveSerializer,
     AirplaneRetrieveSerializer,
-    OrderRetrieveSerializer, AirplaneImageSerializer
+    OrderRetrieveSerializer,
+    AirplaneImageSerializer
 )
 from user.permissions import IsAdminAllOrIsAuthenticatedReadOnly
 
@@ -88,6 +90,16 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(airplane_type__id__in=airplane_type)
         return queryset.distinct()
 
+    @extend_schema(parameters=[
+        OpenApiParameter(
+            name="airplane_type",
+            type={"type": "array", "items": {"type": "number"}},
+            description="Filter by airplane type id (ex. ?airplane_types=2,3)",
+        )])
+    def list(self, request, *args, **kwargs):
+        """Get list of airplanes by type"""
+        return super().list(request, args, kwargs)
+
     @action(
         methods=["POST"],
         detail=True,
@@ -143,6 +155,30 @@ class RouteViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(destination__id__in=destination)
 
         return queryset.distinct()
+
+    @extend_schema(parameters=[
+        OpenApiParameter(
+            name="source",
+            type={"type": "array", "items": {"type": "number"}},
+            description="Filter by airplane type id (ex. ?source=2,3)",
+        ),
+        OpenApiParameter(
+            name="destination",
+            type={"type": "array", "items": {"type": "number"}},
+            description="Filter by airplane type id (ex. ?destination=2,3)",
+        )
+    ])
+    def list(self, request, *args, **kwargs):
+        """
+            Returns a list of routes with filtering options.
+
+            Use query parameters to filter the results:
+            - "source": Filter by source. For example, ?source=1,2
+            - "destination": Filter by destination. For example, ?destination=3,4
+
+            Returns list of routes that match the specified filtering criteria.
+            """
+        return super().list(request, args, kwargs)
 
 
 class CrewViewSet(viewsets.ModelViewSet):
