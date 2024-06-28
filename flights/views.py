@@ -1,5 +1,4 @@
 from django.db.models import Count, F
-from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -175,9 +174,8 @@ class RouteViewSet(viewsets.ModelViewSet):
             Use query parameters to filter the results:
             - "source": Filter by source. For example, ?source=1,2
             - "destination": Filter by destination. For example, ?destination=3,4
-
             Returns list of routes that match the specified filtering criteria.
-            """
+        """
         return super().list(request, args, kwargs)
 
 

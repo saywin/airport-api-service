@@ -16,7 +16,14 @@ from flights.models import (
 class AirplaneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airplane
-        fields = ("id", "name", "rows", "seats_in_row", "airplane_type", "image")
+        fields = (
+            "id",
+            "name",
+            "rows",
+            "seats_in_row",
+            "airplane_type",
+            "image",
+        )
 
 
 class AirplaneTypeSerializer(serializers.ModelSerializer):
@@ -167,4 +174,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderRetrieveSerializer(OrderSerializer):
-    tickets = TicketListSerializer(many=True, read_only=False, allow_empty=False)
+    tickets = TicketListSerializer(
+        many=True,
+        read_only=False,
+        allow_empty=False
+    )

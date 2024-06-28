@@ -8,7 +8,9 @@ from rest_framework.exceptions import ValidationError
 
 
 def airplane_images_path(instance: "Airplane", filename: str) -> pathlib.Path:
-    file_name = f"{slugify(instance.name)}-{uuid.uuid4()}" + pathlib.Path(filename).suffix
+    file_name = ((f"{slugify(instance.name)}"
+                 f"-{uuid.uuid4()}")
+                 + pathlib.Path(filename).suffix)
     return pathlib.Path("uploads/airplane_images/") / pathlib.Path(file_name)
 
 
@@ -21,7 +23,11 @@ class Airplane(models.Model):
         on_delete=models.CASCADE,
         related_name="airplanes"
     )
-    image = models.ImageField(null=True, blank=True, upload_to=airplane_images_path)
+    image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=airplane_images_path
+    )
 
     class Meta:
         ordering = ["name"]
@@ -40,8 +46,16 @@ class AirplaneType(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    flight = models.ForeignKey("Flight", on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
+    flight = models.ForeignKey(
+        "Flight",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     @staticmethod
     def validate_ticket(row, seat, airplane, error_to_raise):
