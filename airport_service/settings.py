@@ -167,8 +167,8 @@ SIMPLE_JWT = {
 # Swagger setting
 # https://drf-spectacular.readthedocs.io/en/latest/readme.html#installation
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Your Project API",
-    "DESCRIPTION": "Your project description",
+    "TITLE": "Airport API",
+    "DESCRIPTION": "Order ticket for your airplane flights",
     "VERSION'": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTINGS": {
