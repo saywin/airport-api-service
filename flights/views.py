@@ -172,8 +172,8 @@ class RouteViewSet(viewsets.ModelViewSet):
             Returns a list of routes with filtering options.
 
             Use query parameters to filter the results:
-            - "source": Filter by source. For example, ?source=1,2
-            - "destination": Filter by destination. For example, ?destination=3,4
+            "source": Filter by source. For example, ?source=1,2
+            "destination": Filter by destination. For example, ?destination=3,4
             Returns list of routes that match the specified filtering criteria.
         """
         return super().list(request, args, kwargs)
