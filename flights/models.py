@@ -58,28 +58,22 @@ class Ticket(models.Model):
     )
 
     @staticmethod
-    def validate_ticket(row, seat, airplane, error_to_raise):
-        for ticket_attr_value, ticket_attr_name, airplane_attr_name in [
-            (row, "row", "rows"),
-            (seat, "seat", "seats_in_row"),
-        ]:
-            count_attrs = getattr(airplane, airplane_attr_name)
-            if not (1 <= ticket_attr_value <= count_attrs):
-                raise error_to_raise(
-                    {
-                        ticket_attr_name: f"{ticket_attr_name} "
-                        f"number must be in available range: "
-                        f"(1, {airplane_attr_name}): "
-                        f"(1, {count_attrs})"
-                    }
-                )
+    def validate_ticket(row, seat, rows, seats_in_row, error_to_raise):
+        if not (1 <= row <= rows and 1 <= seat <= seats_in_row):
+            raise error_to_raise({
+                "row": f"Row number must be in available range: (1, {rows})",
+                "seat": f"Seat number must be in "
+                        f"available range: (1, {seats_in_row})"
+            })
 
     def clean(self):
-        return self.validate_ticket(
-            row=self.row,
-            seat=self.seat,
-            airplane=self.flight.airplane,
-            error_to_raise=ValidationError
+        airplane = self.flight.airplane
+        self.validate_ticket(
+            self.row,
+            self.seat,
+            airplane.rows,
+            airplane.seats_in_row,
+            ValidationError
         )
 
     class Meta:
