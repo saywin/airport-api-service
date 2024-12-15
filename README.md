@@ -7,7 +7,7 @@ API service for airport management written on DRF and Dockerized
 Install PostgresSQL and create db
 
 ```shell
-git clone https://github.com/vburkalo/Airport-API-Service.git
+git clone https://github.com/saywin/Airport-API-Service.git
 cd airport_api_service
 python -m venv venv
 source venv/bin/activate
